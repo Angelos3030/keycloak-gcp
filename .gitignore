@@ -8,9 +8,10 @@ crash.*.log
 *.tfvars
 !*.tfvars.example
 
-# Secrets / credentials
-*.json
-!package.json
+# Secrets / credentials (GCP service account key files)
+*-key.json
+*-credentials.json
+service-account*.json
 
 # OS/editor noise
 .DS_Store
