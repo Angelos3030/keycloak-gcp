@@ -1,0 +1,17 @@
+# Terraform
+**/.terraform/*
+*.tfstate
+*.tfstate.*
+*.tfplan
+crash.log
+crash.*.log
+*.tfvars
+!*.tfvars.example
+
+# Secrets / credentials
+*.json
+!package.json
+
+# OS/editor noise
+.DS_Store
+Thumbs.db
