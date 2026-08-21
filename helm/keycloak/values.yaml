@@ -1,0 +1,6 @@
+replicas: 3
+
+image:
+  repository: quay.io/keycloak/keycloak
+  tag: "26.6.4"
+  pullPolicy: IfNotPresent
