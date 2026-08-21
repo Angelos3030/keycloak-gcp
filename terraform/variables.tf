@@ -39,6 +39,16 @@ variable "subnet_name" {
   type        = string
 }
 
+variable "psc_subnet_name" {
+  description = "The name of the subnet that hosts Private Service Connect endpoints."
+  type        = string
+}
+
+variable "psc_subnet_ip_cidr_range" {
+  description = "The IP CIDR range for the Private Service Connect endpoint subnet."
+  type        = string
+}
+
 variable "gke_pods_secondary_range_name" {
   description = "The name of the secondary IP range for GKE pods."
   type        = string
@@ -131,4 +141,44 @@ variable "router_name" {
 variable "nat_name" {
   description = "The Cloud NAT name for the development environment."
   type        = string
+}
+
+variable "cloudsql_instance_name" {
+  description = "Name of the Cloud SQL PostgreSQL instance."
+  type        = string
+}
+
+variable "cloudsql_database_version" {
+  description = "Cloud SQL PostgreSQL version."
+  type        = string
+}
+
+variable "cloudsql_tier" {
+  description = "Cloud SQL machine tier."
+  type        = string
+}
+
+variable "cloudsql_availability_type" {
+  description = "Cloud SQL availability mode."
+  type        = string
+}
+
+variable "cloudsql_disk_size_gb" {
+  description = "Initial Cloud SQL SSD disk size in GB."
+  type        = number
+}
+
+variable "cloudsql_database_name" {
+  description = "Name of the Keycloak PostgreSQL database."
+  type        = string
+}
+
+variable "cloudsql_database_user_name" {
+  description = "Name of the Keycloak PostgreSQL user."
+  type        = string
+}
+
+variable "cloudsql_psc_allowed_consumer_projects" {
+  description = "Projects allowed to create PSC endpoints for Cloud SQL."
+  type        = list(string)
 }

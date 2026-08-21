@@ -1,15 +1,17 @@
 module "network" {
-  source                  = "./modules/network"
-  vpc_name                = var.vpc_name
-  project_id              = var.project_id
-  region                  = var.region
-  auto_create_subnetworks = var.auto_create_subnetworks
-  subnet_name             = var.subnet_name
-  subnet_ip_cidr_range    = var.subnet_ip_cidr_range
-  gke_pods_cidr_range     = var.gke_pods_cidr_range
-  gke_services_cidr_range = var.gke_services_cidr_range
-  router_name             = var.router_name
-  nat_name                = var.nat_name
+  source                   = "./modules/network"
+  vpc_name                 = var.vpc_name
+  project_id               = var.project_id
+  region                   = var.region
+  auto_create_subnetworks  = var.auto_create_subnetworks
+  subnet_name              = var.subnet_name
+  subnet_ip_cidr_range     = var.subnet_ip_cidr_range
+  psc_subnet_name          = var.psc_subnet_name
+  psc_subnet_ip_cidr_range = var.psc_subnet_ip_cidr_range
+  gke_pods_cidr_range      = var.gke_pods_cidr_range
+  gke_services_cidr_range  = var.gke_services_cidr_range
+  router_name              = var.router_name
+  nat_name                 = var.nat_name
 }
 
 module "gke" {
@@ -37,4 +39,22 @@ module "gke" {
 
   master_ipv4_cidr_block     = var.master_ipv4_cidr_block
   master_authorized_networks = var.gke_master_authorized_networks
+}
+
+module "cloudsql" {
+  source = "./modules/cloudsql"
+
+  project_id                    = var.project_id
+  region                        = var.region
+  instance_name                 = var.cloudsql_instance_name
+  database_version              = var.cloudsql_database_version
+  tier                          = var.cloudsql_tier
+  availability_type             = var.cloudsql_availability_type
+  disk_size_gb                  = var.cloudsql_disk_size_gb
+  database_name                 = var.cloudsql_database_name
+  database_user_name            = var.cloudsql_database_user_name
+  psc_allowed_consumer_projects = var.cloudsql_psc_allowed_consumer_projects
+
+  vpc_network_id = module.network.network_id
+  psc_subnet_id  = module.network.psc_subnet_id
 }

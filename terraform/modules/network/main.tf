@@ -22,6 +22,14 @@ resource "google_compute_subnetwork" "subnet" {
     }
 }
 
+resource "google_compute_subnetwork" "psc" {
+  name          = var.psc_subnet_name
+  ip_cidr_range = var.psc_subnet_ip_cidr_range
+  region        = var.region
+  network       = google_compute_network.vpc_network.id
+  project       = var.project_id
+}
+
 resource "google_compute_router" "nat" {
   name    = var.router_name
   network = google_compute_network.vpc_network.id

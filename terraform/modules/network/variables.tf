@@ -40,6 +40,17 @@ variable "subnet_name" {
   description = "The name of the subnetwork."
   type        = string
 }
+
+variable "psc_subnet_name" {
+  description = "The name of the subnet that hosts Private Service Connect endpoints."
+  type        = string
+}
+
+variable "psc_subnet_ip_cidr_range" {
+  description = "The IP CIDR range for the Private Service Connect endpoint subnet."
+  type        = string
+}
+
 variable "router_name" {
   description = "The name of the Cloud Router."
   type        = string
