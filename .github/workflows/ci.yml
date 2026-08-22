@@ -1,0 +1,124 @@
+name: Infrastructure validation
+
+on:
+  pull_request:
+    paths:
+      - "terraform/**"
+      - "helm/**"
+      - "scripts/**"
+      - "docs/**"
+      - ".github/workflows/**"
+      - "README.md"
+  push:
+    branches:
+      - main
+    paths:
+      - "terraform/**"
+      - "helm/**"
+      - "scripts/**"
+      - "docs/**"
+      - ".github/workflows/**"
+      - "README.md"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: infrastructure-validation-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  terraform:
+    name: Terraform format and validate
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: terraform
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v6
+
+      - name: Set up Terraform
+        uses: hashicorp/setup-terraform@v4
+        with:
+          terraform_version: 1.15.8
+          terraform_wrapper: false
+
+      - name: Check Terraform formatting
+        run: terraform fmt -check -recursive
+
+      - name: Initialize Terraform without a backend
+        run: terraform init -backend=false -input=false
+
+      - name: Validate Terraform configuration
+        run: terraform validate -no-color
+
+  helm-and-manifests:
+    name: Helm and Kubernetes manifests
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v6
+
+      - name: Set up Helm
+        uses: azure/setup-helm@v5.0.0
+        with:
+          version: v3.18.4
+
+      - name: Render Keycloak Helm release
+        run: |
+          helm template keycloak oci://ghcr.io/codecentric/helm-charts/keycloakx \
+            --version 7.2.3 \
+            --namespace keycloak \
+            --values helm/keycloak/values.yaml \
+            > "${RUNNER_TEMP}/keycloak-rendered.yaml"
+
+      - name: Install YAML parser
+        run: python -m pip install --disable-pip-version-check PyYAML==6.0.2
+
+      - name: Parse Kubernetes YAML
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import yaml
+
+          files = [
+              Path("helm/keycloak/backend-config.yaml"),
+              Path("helm/keycloak/frontend-config.yaml"),
+              Path("helm/keycloak/managed-certificate.yaml"),
+              Path("helm/keycloak/values.yaml"),
+          ]
+
+          for path in files:
+              documents = list(yaml.safe_load_all(path.read_text(encoding="utf-8")))
+              if not documents or all(document is None for document in documents):
+                  raise SystemExit(f"{path} contains no YAML documents")
+              print(f"Validated {path}")
+          PY
+
+  scripts-and-docs:
+    name: Scripts and documentation
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v6
+
+      - name: Parse PowerShell deployment script
+        shell: pwsh
+        run: |
+          $tokens = $null
+          $errors = $null
+          [System.Management.Automation.Language.Parser]::ParseFile(
+            (Resolve-Path "scripts/deploy-keycloak.ps1"),
+            [ref]$tokens,
+            [ref]$errors
+          ) | Out-Null
+
+          if ($errors.Count -gt 0) {
+            $errors | ForEach-Object { Write-Error $_ }
+            exit 1
+          }
