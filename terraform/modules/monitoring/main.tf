@@ -63,14 +63,17 @@ resource "google_monitoring_alert_policy" "keycloak_public_uptime_failure" {
 
 resource "google_logging_metric" "keycloak_failed_logins" {
   project     = var.project_id
-  description = "Counts Keycloak login failures caused by invalid user credentials"
+  description = "Counts Keycloak login failures caused by invalid usernames or passwords"
   name        = "keycloak_failed_logins"
   filter      = <<-EOT
     resource.type="k8s_container"
     AND resource.labels.namespace_name="keycloak"
     AND resource.labels.container_name="keycloak"
     AND textPayload:"type=\"LOGIN_ERROR\""
-    AND textPayload:"error=\"invalid_user_credentials\""
+    AND (
+      textPayload:"error=\"invalid_user_credentials\""
+      OR textPayload:"error=\"user_not_found\""
+    )
   EOT
   metric_descriptor {
     metric_kind = "DELTA"

@@ -186,7 +186,7 @@ Terraform provisions:
 - A public HTTPS uptime check against `/realms/master/.well-known/openid-configuration` every 60 seconds with TLS validation enabled.
 - An email notification channel.
 - An uptime alert policy.
-- A counter-type logs-based metric matching Keycloak `LOGIN_ERROR` events with `invalid_user_credentials`.
+- A counter-type logs-based metric matching Keycloak `LOGIN_ERROR` events with `invalid_user_credentials` or `user_not_found`.
 - An alert that sums failures across all Keycloak pods and fires when the total is greater than 10 in a 60-second alignment period.
 
 The uptime alert was tested by scaling the Keycloak StatefulSet to zero and then restoring it to three replicas:

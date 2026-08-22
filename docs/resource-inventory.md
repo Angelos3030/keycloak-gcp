@@ -61,7 +61,7 @@ No folder or organization resources are created by this repository. Their identi
 | Monitoring | `google_monitoring_notification_channel` | `Keycloak practice alerts` | Project | Email destination |
 | Monitoring | `google_monitoring_uptime_check_config` | `Keycloak public HTTPS` | Global | 60-second HTTPS check; 10-second timeout |
 | Monitoring | `google_monitoring_alert_policy` | `keycloak_public_uptime_failure` | Project | Availability alert |
-| Logging | `google_logging_metric` | `keycloak_failed_logins` | Project | Invalid-credential counter |
+| Logging | `google_logging_metric` | `keycloak_failed_logins` | Project | Invalid username/password counter |
 | Monitoring | `google_monitoring_alert_policy` | `keycloak_failed_logins` | Project | More than 10 failures/minute |
 
 Terraform also manages `random_password.database_user`. It stores the generated database password in Terraform state; it is not a standalone GCP resource.

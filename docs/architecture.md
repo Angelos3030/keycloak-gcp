@@ -94,7 +94,7 @@ This is acceptable for a time-limited practice environment but not the preferred
 
 The public uptime check requests the master realm OpenID Connect discovery document over port 443 every 60 seconds and validates TLS. Its alert condition evaluates the boolean `check_passed` metric and notifies the configured email channel on sustained failure.
 
-Keycloak emits `LOGIN_ERROR` events to stdout. GKE workload logging sends them to Cloud Logging. A user-defined DELTA/INT64 log metric counts only events containing both `LOGIN_ERROR` and `invalid_user_credentials`. The alert aligns counts into 60-second windows, sums each pod's events and then reduces across all pods. `COMPARISON_GT` with threshold `10` therefore fires from the eleventh failed credential attempt in an aligned interval.
+Keycloak emits `LOGIN_ERROR` events to stdout. GKE workload logging sends them to Cloud Logging. A user-defined DELTA/INT64 log metric counts events containing `LOGIN_ERROR` and either `invalid_user_credentials` or `user_not_found`. It deliberately excludes configuration errors such as `client_not_found`. The alert aligns counts into 60-second windows, sums each pod's events and then reduces across all pods. `COMPARISON_GT` with threshold `10` therefore fires from the eleventh failed credential attempt in an aligned interval.
 
 No username, IP address or realm is extracted into metric labels. This limits metric cardinality, cost and unnecessary replication of identity data.
 

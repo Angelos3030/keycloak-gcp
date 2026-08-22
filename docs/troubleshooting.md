@@ -240,7 +240,7 @@ Verify Keycloak emits matching events:
 ```bash
 for pod in $(kubectl get pods -n keycloak -l app.kubernetes.io/name=keycloakx -o name); do
   kubectl logs -n keycloak "$pod" --since=5m |
-    grep -Ei 'LOGIN_ERROR|invalid_user_credentials'
+    grep -Ei 'LOGIN_ERROR|invalid_user_credentials|user_not_found'
 done
 ```
 
@@ -251,7 +251,7 @@ gcloud logging metrics describe keycloak_failed_logins --project=keycloak-practi
 gcloud monitoring policies list --project=keycloak-practice-01
 ```
 
-The metric does not backfill logs created before the metric existed. Generate 11 matching failures inside one aligned 60-second interval, then allow time for log ingestion and alert evaluation. Ensure the alert uses `ALIGN_SUM`, `REDUCE_SUM`, `COMPARISON_GT` and threshold `10`.
+The metric does not backfill logs created before the metric existed. Generate 11 matching `invalid_user_credentials` or `user_not_found` failures inside one aligned 60-second interval, then allow time for log ingestion and alert evaluation. `client_not_found` is deliberately excluded because it indicates an OAuth client configuration error rather than bad user credentials. Ensure the alert uses `ALIGN_SUM`, `REDUCE_SUM`, `COMPARISON_GT` and threshold `10`.
 
 ## Escalation Evidence
 

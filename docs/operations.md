@@ -214,7 +214,7 @@ kubectl rollout status statefulset/keycloak-keycloakx -n keycloak --timeout=10m
 
 Failed-login test:
 
-1. Submit 11 invalid passwords within one aligned 60-second interval.
+1. Submit 11 invalid usernames or passwords within one aligned 60-second interval.
 2. Confirm 11 matching `LOGIN_ERROR` entries in Cloud Logging.
 3. Confirm the `keycloak_failed_logins` incident and email.
 4. Perform a successful login afterward.
