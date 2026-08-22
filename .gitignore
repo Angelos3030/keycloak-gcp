@@ -16,3 +16,5 @@ service-account*.json
 # OS/editor noise
 .DS_Store
 Thumbs.db
+*.plan
+gha-creds-*.json
