@@ -58,3 +58,22 @@ module "cloudsql" {
   vpc_network_id = module.network.network_id
   psc_subnet_id  = module.network.psc_subnet_id
 }
+
+module "public_endpoint" {
+  source = "./modules/public-endpoint"
+
+  project_id    = var.project_id
+  dns_zone_name = var.dns_zone_name
+  dns_name      = var.dns_name
+  address_name  = var.address_name
+  keycloak_fqdn = var.keycloak_fqdn
+}
+
+module "monitoring" {
+  source = "./modules/monitoring"
+
+  project_id                        = var.project_id
+  notification_channel_display_name = var.notification_channel_display_name
+  notification_email                = var.notification_email
+  keycloak_host                     = module.public_endpoint.keycloak_fqdn
+}

@@ -13,11 +13,7 @@ output "database_user_name" {
   value       = google_sql_user.keycloak.name
 }
 
-output "database_user_password" {
-  description = "Generated password for the Keycloak database user."
-  value       = random_password.database_user.result
-  sensitive   = true
-}
+
 
 output "psc_endpoint_ip_address" {
   description = "Private IP address Keycloak uses to reach Cloud SQL through PSC."
@@ -27,4 +23,13 @@ output "psc_endpoint_ip_address" {
 output "psc_service_attachment_link" {
   description = "Cloud SQL producer service attachment consumed by the PSC forwarding rule."
   value       = google_sql_database_instance.keycloak.psc_service_attachment_link
+}
+
+
+
+
+output "database_user_password" {
+  description = "Generated password for the Keycloak database user."
+  value       = random_password.database_user.result
+  sensitive   = true
 }

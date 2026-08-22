@@ -87,9 +87,9 @@ resource "google_container_cluster" "primary" {
 }
 
 resource "google_container_node_pool" "systepool" {
-  name       = var.node_pool_name
-  location   = var.region
-  cluster    = google_container_cluster.primary.name
+  name     = var.node_pool_name
+  location = var.region
+  cluster  = google_container_cluster.primary.name
 
   depends_on = [
     google_project_iam_member.node_artifact_registry_reader,
@@ -109,7 +109,7 @@ resource "google_container_node_pool" "systepool" {
 
     # Google recommends custom service accounts that have cloud-platform scope and permissions granted via IAM Roles.
     service_account = google_service_account.default.email
-    oauth_scopes    = [
+    oauth_scopes = [
       "https://www.googleapis.com/auth/cloud-platform"
     ]
   }
@@ -126,9 +126,9 @@ resource "google_container_node_pool" "systepool" {
 }
 
 resource "google_container_node_pool" "workloadpool" {
-  name       = var.workload_node_pool_name
-  location   = var.region
-  cluster    = google_container_cluster.primary.name
+  name     = var.workload_node_pool_name
+  location = var.region
+  cluster  = google_container_cluster.primary.name
 
   depends_on = [
     google_project_iam_member.node_artifact_registry_reader,
@@ -148,7 +148,7 @@ resource "google_container_node_pool" "workloadpool" {
 
     # Google recommends custom service accounts that have cloud-platform scope and permissions granted via IAM Roles.
     service_account = google_service_account.default.email
-    oauth_scopes    = [
+    oauth_scopes = [
       "https://www.googleapis.com/auth/cloud-platform"
     ]
   }

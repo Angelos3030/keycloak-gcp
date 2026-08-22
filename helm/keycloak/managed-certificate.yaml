@@ -1,0 +1,8 @@
+apiVersion: networking.gke.io/v1
+kind: ManagedCertificate
+metadata:
+  name: keycloak-certificate
+  namespace: keycloak
+spec:
+  domains:
+    - keycloak.lab.getvitrina.gr

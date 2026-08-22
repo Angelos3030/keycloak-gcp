@@ -182,3 +182,32 @@ variable "cloudsql_psc_allowed_consumer_projects" {
   description = "Projects allowed to create PSC endpoints for Cloud SQL."
   type        = list(string)
 }
+variable "dns_zone_name" {
+  description = "Cloud DNS managed-zone resource name."
+  type        = string
+}
+
+variable "dns_name" {
+  description = "Delegated public DNS suffix, ending with a dot."
+  type        = string
+}
+
+variable "address_name" {
+  description = "Name of the global static IP for Keycloak."
+  type        = string
+}
+
+variable "keycloak_fqdn" {
+  description = "Public Keycloak FQDN, ending with a dot."
+  type        = string
+}
+
+variable "notification_channel_display_name" {
+  description = "Display name for the practice email notification channel."
+  type        = string
+}
+
+variable "notification_email" {
+  description = "Email address that receives practice monitoring alerts."
+  type        = string
+}

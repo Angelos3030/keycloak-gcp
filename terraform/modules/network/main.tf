@@ -4,22 +4,22 @@ resource "google_compute_network" "vpc_network" {
 }
 
 resource "google_compute_subnetwork" "subnet" {
-  name          = var.subnet_name
-  ip_cidr_range = var.subnet_ip_cidr_range
-  region        = var.region 
-  network       = google_compute_network.vpc_network.id
-  project       = var.project_id
+  name                     = var.subnet_name
+  ip_cidr_range            = var.subnet_ip_cidr_range
+  region                   = var.region
+  network                  = google_compute_network.vpc_network.id
+  project                  = var.project_id
   private_ip_google_access = true
 
- secondary_ip_range {
+  secondary_ip_range {
     range_name    = "gke-pods-secondary-range"
     ip_cidr_range = var.gke_pods_cidr_range
   }
 
-    secondary_ip_range {
-        range_name    = "gke-services-secondary-range"
-        ip_cidr_range = var.gke_services_cidr_range
-    }
+  secondary_ip_range {
+    range_name    = "gke-services-secondary-range"
+    ip_cidr_range = var.gke_services_cidr_range
+  }
 }
 
 resource "google_compute_subnetwork" "psc" {

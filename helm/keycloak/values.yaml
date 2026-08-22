@@ -4,3 +4,84 @@ image:
   repository: quay.io/keycloak/keycloak
   tag: "26.6.4"
   pullPolicy: IfNotPresent
+
+command:
+  - "/opt/keycloak/bin/kc.sh"
+
+args:
+  - "start"
+  - "--http-port=8080"
+  - "--hostname=https://keycloak.lab.getvitrina.gr"
+  - "--hostname-strict=true"
+
+database:
+  vendor: postgres
+  hostname: "10.11.0.2"
+  port: 5432
+  database: keycloak
+  username: keycloak
+  existingSecret: keycloak-db-credentials
+  existingSecretKey: password
+
+cache:
+  stack: default
+
+health:
+  enabled: true
+
+metrics:
+  enabled: true
+
+
+resources:
+  requests:
+    cpu: "500m"
+    memory: "1Gi"
+  limits:
+    cpu: "1"
+    memory: "2Gi"
+
+podDisruptionBudget:
+  minAvailable: 2
+
+extraEnv: |
+  - name: KC_BOOTSTRAP_ADMIN_USERNAME
+    value: admin
+  - name: KC_BOOTSTRAP_ADMIN_PASSWORD
+    valueFrom:
+      secretKeyRef:
+        name: keycloak-admin-credentials
+        key: password
+
+
+http:
+  relativePath: "/"
+  managementRelativePath: "/"
+
+proxy:
+  enabled: true
+  mode: xforwarded
+  http:
+    enabled: true
+
+service:
+  type: ClusterIP
+  annotations:
+    cloud.google.com/neg: '{"ingress": true}'
+    cloud.google.com/backend-config: '{"ports":{"http":"keycloak-backend-config"}}'
+
+ingress:
+  enabled: true
+  servicePort: http
+  annotations:
+    kubernetes.io/ingress.global-static-ip-name: "keycloak-public-ip"
+    networking.gke.io/managed-certificates: "keycloak-certificate"
+    networking.gke.io/v1beta1.FrontendConfig: "keycloak-frontend-config"
+  rules:
+    - host: keycloak.lab.getvitrina.gr
+      paths:
+        - path: /
+          pathType: Prefix
+
+dbchecker:
+  enabled: true
